@@ -41,8 +41,8 @@ class Grid:
         return xs
 
     def make_walls(self):
-        """Skapa väggar runt hela spelplanen samt inner-väggar med for-loopar (V1-H)"""
-        # Yttervägg
+        """Skapa väggar runt hela spelplanen. (V1-H: for-loopar används)"""
+        # Yttervägg – samma som original
         for i in range(self.height):
             self.set(0, i, self.wall)
             self.set(self.width - 1, i, self.wall)
@@ -51,24 +51,12 @@ class Grid:
             self.set(j, 0, self.wall)
             self.set(j, self.height - 1, self.wall)
 
-        # V1-H: Inner-väggar skapade med for-loopar
-        # Horisontell vägg i övre halvan med passage vid x=8
-        for x in range(2, 8):
-            self.set(x, 4, self.wall)
-        for x in range(9, 18):
-            self.set(x, 4, self.wall)
-
-        # Vertikal vägg i mitten med passage vid y=7
-        for y in range(2, 7):
-            self.set(20, y, self.wall)
-        for y in range(8, self.height - 1):
-            self.set(20, y, self.wall)
-
-        # Horisontell vägg i nedre delen med passage vid x=27
-        for x in range(22, 27):
-            self.set(x, 8, self.wall)
-        for x in range(28, self.width - 1):
-            self.set(x, 8, self.wall)
+        # V1-H: Inner-väggar med for-loopar
+        # Vertikal vägg höger om mitten, passage vid y=5
+        for y in range(1, 5):
+            self.set(22, y, self.wall)
+        for y in range(6, self.height - 1):
+            self.set(22, y, self.wall)
 
     def get_random_x(self):
         """Slumpa en x-position inuti spelplanen (ej yttervägg)"""
