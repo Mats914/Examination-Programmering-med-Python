@@ -1,8 +1,8 @@
-# Denna fil innehåller klassen Item och en lista med alla föremål i spelet.
+# Denna fil innehåller alla klasser för föremål samt funktioner för att placera dem på kartan.
 
 
 class Item:
-    """Representerar saker man kan plocka upp."""
+    """Representerar en frukt eller grönsak man kan plocka upp."""
     def __init__(self, name, value=20, symbol="?"):
         # V1-D: Alla frukter är värda 20 poäng (fruktsallad)
         self.name = name
@@ -14,11 +14,24 @@ class Item:
 
 
 class Trap:
-    """Representerar en fälla på spelplanen. (V2: Fällor)"""
+    """Representerar en fälla på spelplanen.
+    Om spelaren går på en fälla förlorar man 10 poäng. Fällan ligger kvar. (V2: Fällor)"""
     symbol = "X"
 
     def __init__(self):
         self.name = "trap"
+
+    def __str__(self):
+        return self.symbol
+
+
+class Spade:
+    """Representerar en spade man kan plocka upp.
+    När man sedan går in i en vägg används spaden för att ta bort den. (V2: Spade)"""
+    symbol = "P"
+
+    def __init__(self):
+        self.name = "spade"
 
     def __str__(self):
         return self.symbol
@@ -36,9 +49,10 @@ class Key:
 
 
 class Chest:
-    """Representerar en kista på spelplanen. (V2: Nycklar och kistor)"""
+    """Representerar en kista på spelplanen.
+    Öppnas med en nyckel och ger 100 poäng. (V2: Nycklar och kistor)"""
     symbol = "C"
-    treasure_value = 100  # Skatten i kistan är värd 100 poäng
+    treasure_value = 100
 
     def __init__(self):
         self.name = "chest"
@@ -59,19 +73,22 @@ pickups = [
     Item("meatball"),
 ]
 
-# Antal ursprungliga items – används för att avgöra när Exit aktiveras (V2: Exit)
+# Antal ursprungliga frukter – används för att avgöra när Exit aktiveras (V2: Exit)
 original_pickup_count = len(pickups)
 
 
 def randomize(grid):
-    """Placera ut alla frukter, fällor, nycklar och kistor på slumpmässiga lediga positioner."""
+    """Placera ut alla föremål på slumpmässiga lediga positioner på kartan."""
     # Placera frukter
     for item in pickups:
         _place_on_empty(grid, item)
 
-    # V2: Fällor – placera 3 fällor på kartan
+    # V2: Fällor – placera 3 fällor
     for _ in range(3):
         _place_on_empty(grid, Trap())
+
+    # V2: Spade – placera 1 spade
+    _place_on_empty(grid, Spade())
 
     # V2: Nycklar och kistor – 2 nycklar och 2 kistor
     for _ in range(2):
