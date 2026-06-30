@@ -1,55 +1,66 @@
-# Examination
+# Fruit Loop
 
-Individuell examinationsuppgift i kursen Programmering med Python.
-
-## Instruktioner
-Detta är filen `README.md`. Du ska beskriva projektet och hur man startar det. Du får ändra allt innehåll i denna.
-
-Byt gärna namn på projektet så att det inte heter "exam_template" när du lämnar in.
-
-Om något i instruktionerna är oklart - fråga läraren, skriv i någon öppen Discord-kanal eller fråga en AI.
-
----
-
+Individuell examinationsuppgift i kursen Programmering med Python (TAP VT26).
 
 ## Starta projektet
 
-För att starta mitt projekt skriver man följande i terminalen, medan man står i projektets rotmapp.
+Kör följande kommando i terminalen från projektets rotmapp:
 
 ```commandline
 python -m src.game
 ```
 
-## Vad jag har gjort
-Här kan du skriva vilka kriterier du har arbetat med.
+## Kör tester
 
-*Du kan använda emojis för att visa om du är klar med ett krav.* ✅❌
+```commandline
+pytest tests/
+```
 
-|Version 1|Status|
-|---------|------|
-|A        | ?    |
-|B        |      |
-|C        |      |
-|D        |      |
-|E        |      |
-|F        |      |
-|G        |      |
-|H        |      |
+## Hur man spelar
 
-|Version 2|Status|
-|---------|------|
-|I        |      |
-|J        |      |
-|K        |      |
-|L        |      |
-|M        |      |
-|N        |      |
+| Tangent | Handling |
+|---------|----------|
+| `W` `A` `S` `D` | Rörelse uppåt / vänster / nedåt / höger |
+| `JW` `JA` `JS` `JD` | Hoppa två steg i en riktning |
+| `I` | Visa inventory |
+| `Q` / `X` | Avsluta spelet |
 
-|Version 3|Status|
-|---------|------|
-|O        |      |
-|P        |      |
-|Q        |      |
-|R        |      |
-|S        |      |
-# Examination-Programmering-med-Python
+## Symboler på kartan
+
+| Symbol | Betydelse |
+|--------|-----------|
+| `@` | Spelaren |
+| `?` | Frukt (+20 poäng) |
+| `X` | Fälla (-10 poäng, ligger kvar) |
+| `P` | Spade (tar bort nästa vägg du går in i) |
+| `K` | Nyckel |
+| `C` | Kista (+100 poäng, kräver nyckel) |
+| `E` | Exit (vinn spelet när alla frukter är plockade) |
+| `■` | Vägg |
+
+## Implementerade krav
+
+| Version 1 | Status |
+|-----------|--------|
+| A – Spelaren börjar nära mitten         | ✅ |
+| B – WASD i alla fyra riktningar         | ✅ |
+| C – Kan inte gå igenom väggar           | ✅ |
+| D – Fruktsallad (+20 poäng)             | ✅ |
+| E – Inventory-lista                     | ✅ |
+| F – Kommando "i" för inventory          | ✅ |
+| G – The floor is lava (-1/steg)         | ✅ |
+| H – For-loopar för inner-väggar         | ✅ |
+
+| Version 2 | Status |
+|-----------|--------|
+| Fällor (-10 poäng, ligger kvar)         | ✅ |
+| Spade (tar bort en vägg)               | ✅ |
+| Nycklar och kistor (+100 poäng)         | ✅ |
+| Bördig jord (ny frukt var 25:e drag)   | ✅ |
+| Exit (vinn när alla frukter plockats)  | ✅ |
+| Jump (JW/JA/JS/JD hoppar två steg)    | ✅ |
+
+| Version 3 | Status |
+|-----------|--------|
+| Grace period (5 steg utan avdrag)      | ✅ |
+| TDD med pytest (23 tester)             | ✅ |

@@ -1,5 +1,7 @@
 # Denna fil innehåller alla klasser för föremål samt funktioner för att placera dem på kartan.
 
+import random
+
 
 class Item:
     """Representerar en frukt eller grönsak man kan plocka upp."""
@@ -27,7 +29,7 @@ class Trap:
 
 class Spade:
     """Representerar en spade man kan plocka upp.
-    När man sedan går in i en vägg används spaden för att ta bort den. (V2: Spade)"""
+    Nästa gång spelaren går in i en vägg används spaden för att ta bort den. (V2: Spade)"""
     symbol = "P"
 
     def __init__(self):
@@ -61,7 +63,7 @@ class Chest:
         return self.symbol
 
 
-# Lista med alla frukter/grönsaker som placeras ut på kartan
+# Lista med alla startfrukter som placeras ut på kartan
 pickups = [
     Item("carrot"),
     Item("apple"),
@@ -76,10 +78,21 @@ pickups = [
 # Antal ursprungliga frukter – används för att avgöra när Exit aktiveras (V2: Exit)
 original_pickup_count = len(pickups)
 
+# Alla möjliga namn på frukter som kan skapas via bördig jord (V2: Bördig jord)
+_fertile_names = ["banana", "grape", "peach", "pear", "plum", "lemon", "mango", "kiwi"]
+
+
+def spawn_new_fruit(grid):
+    """Skapar en ny slumpmässig frukt på en ledig ruta. (V2: Bördig jord)"""
+    name = random.choice(_fertile_names)
+    new_fruit = Item(name)
+    _place_on_empty(grid, new_fruit)
+    return new_fruit
+
 
 def randomize(grid):
     """Placera ut alla föremål på slumpmässiga lediga positioner på kartan."""
-    # Placera frukter
+    # Placera startfrukter
     for item in pickups:
         _place_on_empty(grid, item)
 

@@ -5,6 +5,9 @@ from src.grid import Grid
 from src.player import Player
 from src import pickups
 
+# Antal drag mellan varje ny frukt som skapas (V2: Bördig jord)
+FERTILE_SOIL_INTERVAL = 25
+
 
 class GameState:
     """Samlar spelets alla variabler och tillstånd i en klass."""
@@ -19,6 +22,7 @@ class GameState:
         self.keys_in_inventory = 0   # V2: Räknare för nycklar
         self.items_collected = 0     # V2: Exit – räknar plockade frukter
         self.moves_since_pickup = 0  # V3: Grace period – steg sedan senaste pickup
+        self.total_moves = 0         # V2: Bördig jord – totalt antal drag
 
         # Skapa spelplanen och placera ut väggar och föremål
         self.g = Grid()
@@ -31,7 +35,7 @@ class GameState:
 def print_status(game_grid, state):
     """Visa spelvärlden, poäng och antal nycklar."""
     print("--------------------------------------")
-    print(f"You have {state.score} points. | Keys: {state.keys_in_inventory}")
+    print(f"You have {state.score} points. | Keys: {state.keys_in_inventory} | Spade: {'Yes' if state.player.has_spade else 'No'}")
     print(game_grid)
 
 
@@ -49,7 +53,7 @@ def print_inventory(state):
 # --- Pickup-hantering uppdelad i egna funktioner för tydlighet ---
 
 def _pickup_fruit(item, state):
-    """Hanterar upplockning av en frukt. Returnerar True om spelet är slut."""
+    """Hanterar upplockning av en frukt. (V1-D, V1-E, V3: Grace period)"""
     state.score += item.value
     state.inventory.append(item)
     state.items_collected += 1
@@ -125,57 +129,106 @@ def handle_pickup(maybe_item, state):
     return False
 
 
+def _try_step(dx, dy, state):
+    """Försök ta ett steg i angiven riktning.
+    Returnerar True om steget lyckades, False om väg är blockerad."""
+    if not state.player.can_move(dx, dy, state.g):
+        return False
+
+    next_x = state.player.pos_x + dx
+    next_y = state.player.pos_y + dy
+    maybe_item = state.g.get(next_x, next_y)
+
+    state.player.move(dx, dy)
+
+    # V1-G + V3: The floor is lava – tappa 1 poäng per steg.
+    # Grace period: inga poängavdrag de första 5 stegen efter pickup.
+    state.moves_since_pickup += 1
+    state.total_moves += 1
+    if state.moves_since_pickup > 5:
+        state.score -= 1
+
+    # V2: Bördig jord – var 25:e drag skapas en ny frukt
+    if state.total_moves % FERTILE_SOIL_INTERVAL == 0:
+        new_fruit = pickups.spawn_new_fruit(state.g)
+        print(f"New fruit appeared: {new_fruit.name}!")
+
+    return True
+
+
 def handle_move(dx, dy, state):
-    """Försök flytta spelaren i angiven riktning. (V1-B, V1-C, V1-G)
+    """Försök flytta spelaren ett steg i angiven riktning. (V1-B, V1-C, V1-G)
     Returnerar True om spelet är slut."""
-    if state.player.can_move(dx, dy, state.g):
-        # Kolla vad som finns på nästa ruta innan vi flyttar
-        next_x = state.player.pos_x + dx
-        next_y = state.player.pos_y + dy
-        maybe_item = state.g.get(next_x, next_y)
-
-        state.player.move(dx, dy)
-
-        # V1-G + V3: The floor is lava – tappa 1 poäng per steg.
-        # Grace period: inga poängavdrag de första 5 stegen efter pickup.
-        state.moves_since_pickup += 1
-        if state.moves_since_pickup > 5:
-            state.score -= 1
-
+    if _try_step(dx, dy, state):
+        maybe_item = state.g.get(state.player.pos_x, state.player.pos_y)
         return handle_pickup(maybe_item, state)
     else:
         print("You can't move that way!")
         return False
 
 
+def handle_jump(dx, dy, state):
+    """Hoppa två steg i angiven riktning. (V2: Jump)
+    Om det första steget blockeras händer ingenting.
+    Om det andra steget blockeras stannar spelaren efter ett steg."""
+    # Försök första steget
+    if not _try_step(dx, dy, state):
+        print("You can't jump that way – wall in the way!")
+        return False
+
+    # Försök andra steget – om det misslyckas stannar spelaren efter steg 1
+    _try_step(dx, dy, state)
+
+    # Hantera det spelaren landade på
+    maybe_item = state.g.get(state.player.pos_x, state.player.pos_y)
+    return handle_pickup(maybe_item, state)
+
+
+def parse_command(command, state):
+    """Tolkar spelarens kommando och utför rätt handling.
+    Returnerar True om spelet är slut."""
+
+    # V2: Jump – kommando som börjar med "j" följt av en riktning
+    if len(command) == 2 and command[0] == "j":
+        direction = command[1]
+        jump_map = {"d": (1, 0), "a": (-1, 0), "w": (0, -1), "s": (0, 1)}
+        if direction in jump_map:
+            dx, dy = jump_map[direction]
+            return handle_jump(dx, dy, state)
+
+    # V1-B: Vanlig rörelse med WASD
+    move_map = {"d": (1, 0), "a": (-1, 0), "w": (0, -1), "s": (0, 1)}
+    if command in move_map:
+        dx, dy = move_map[command]
+        return handle_move(dx, dy, state)
+
+    # V1-F: Visa inventory
+    if command == "i":
+        print_inventory(state)
+
+    return False
+
+
 def start(state):
     """Huvudspelloopen – körs tills spelaren avslutar eller vinner."""
     print("Welcome to Fruit Loop!")
     print("Collect all fruits (?), then reach the Exit (E) to win.")
-    print("Watch out for traps (X)! Keys (K) open chests (C). Spade (P) removes walls.")
+    print("Controls: WASD=move | J+WASD=jump | I=inventory | Q/X=quit")
+    print("Items:    ?=fruit  X=trap  P=spade  K=key  C=chest  E=exit")
 
-    command = "a"
+    command = ""
     game_over = False
 
     # Loopa tills användaren trycker Q/X eller vinner
     while command not in ["q", "x"] and not game_over:
         print_status(state.g, state)
 
-        command = input("Use WASD to move, I for inventory, Q/X to quit. ")
-        command = command.casefold()[:1]
+        raw = input("Use WASD to move, Q/X to quit. ").casefold().strip()
 
-        # V1-B: Rörelse i alla fyra riktningar
-        if command == "d":
-            game_over = handle_move(1, 0, state)
-        elif command == "a":
-            game_over = handle_move(-1, 0, state)
-        elif command == "w":
-            game_over = handle_move(0, -1, state)
-        elif command == "s":
-            game_over = handle_move(0, 1, state)
-        elif command == "i":
-            # V1-F: Visa inventory
-            print_inventory(state)
+        # Läs max 2 tecken (för jump-kommandon som "jw")
+        command = raw[:2] if len(raw) >= 2 and raw[0] == "j" else raw[:1]
+
+        game_over = parse_command(command, state)
 
     print(f"Thank you for playing! Final score: {state.score}")
 

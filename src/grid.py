@@ -7,8 +7,8 @@ class Grid:
     """Representerar spelplanen. Du kan ändra standardstorleken och tecknen för olika rutor."""
     width = 36
     height = 12
-    empty = "."   # Tecken för en tom ruta
-    wall = "■"    # Tecken för en ogenomtränglig vägg
+    empty = "."    # Tecken för en tom ruta
+    wall = "■"     # Tecken för en ogenomtränglig vägg
     exit_symbol = "E"  # Tecken för utgången (V2: Exit)
 
     def __init__(self):
@@ -61,14 +61,14 @@ class Grid:
             self.set(j, self.height - 1, self.wall)
 
         # --- V1-H: Inner-väggar skapade med for-loopar ---
-        # Horisontell vägg i övre halvan (rad 4), med passage vid x=14
+        # Horisontell vägg på rad 4, med passage vid x=14 (mitten av kartan)
         for x in range(1, 14):
             self.set(x, 4, self.wall)
         for x in range(15, self.width - 1):
             self.set(x, 4, self.wall)
 
-        # Vertikal vägg i nedre halvan (kolumn 22), med passage vid y=8
-        for y in range(5, 8):
+        # Vertikal vägg vid kolumn 22, med passage vid y=8 (nedre delen)
+        for y in range(1, 8):
             self.set(22, y, self.wall)
         for y in range(9, self.height - 1):
             self.set(22, y, self.wall)

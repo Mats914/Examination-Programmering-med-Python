@@ -29,7 +29,7 @@ class Player:
         if next_cell == grid.wall and self.has_spade:
             grid.clear(next_x, next_y)  # Väggen försvinner
             self.has_spade = False       # Spaden är förbrukad
-            print("Du använde spaden och tog bort väggen!")
+            print("You used the spade and removed a wall!")
             return True
 
         # Annars: kan bara gå om nästa ruta inte är en vägg
