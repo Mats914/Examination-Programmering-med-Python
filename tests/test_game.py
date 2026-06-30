@@ -116,6 +116,10 @@ class TestGameLogic:
     def test_score_minskar_per_steg_efter_grace(self):
         """Poängen ska minska med 1 per steg efter grace period. (V1-G)"""
         state = make_state()
+        # Rensa rutan framför spelaren så steget inte råkar landa på en frukt
+        x, y = state.player.pos_x, state.player.pos_y
+        state.g.clear(x + 1, y)
+
         state.moves_since_pickup = 10
         score_before = state.score
         handle_move(1, 0, state)
@@ -124,6 +128,9 @@ class TestGameLogic:
     def test_grace_period_inga_avdrag(self):
         """Inga poängavdrag inom grace period. (V3: Grace period)"""
         state = make_state()
+        x, y = state.player.pos_x, state.player.pos_y
+        state.g.clear(x + 1, y)
+
         state.moves_since_pickup = 0
         score_before = state.score
         handle_move(1, 0, state)
