@@ -12,6 +12,14 @@ python -m src.game
 
 ## Kör tester
 
+Installera pytest om det inte redan är installerat:
+
+```commandline
+pip install pytest
+```
+
+Kör sedan testerna:
+
 ```commandline
 pytest tests/
 ```
@@ -53,14 +61,15 @@ pytest tests/
 
 | Version 2 | Status |
 |-----------|--------|
-| Fällor (-10 poäng, ligger kvar)         | ✅ |
-| Spade (tar bort en vägg)               | ✅ |
-| Nycklar och kistor (+100 poäng)         | ✅ |
-| Bördig jord (ny frukt var 25:e drag)   | ✅ |
-| Exit (vinn när alla frukter plockats)  | ✅ |
-| Jump (JW/JA/JS/JD hoppar två steg)    | ✅ |
+| I – Fällor (-10 poäng, ligger kvar)     | ✅ |
+| J – Spade (tar bort en vägg)            | ✅ |
+| K – Nycklar och kistor (+100 poäng)     | ✅ |
+| L – Bördig jord (ny frukt var 25:e drag)| ✅ |
+| M – Exit (vinn när alla frukter plockats)| ✅ |
+| N – Jump (JW/JA/JS/JD hoppar två steg) | ✅ |
 
 | Version 3 | Status |
 |-----------|--------|
-| Grace period (5 steg utan avdrag)      | ✅ |
-| TDD med pytest (23 tester)             | ✅ |
+| O – Grace period (5 steg utan avdrag)   | ✅ |
+| S – TDD med pytest (23 tester)          | ✅ |
+.
