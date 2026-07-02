@@ -76,7 +76,7 @@ pytest tests/
 ## Skärmdumpar
 
 ### Spelet i aktion
-![Fruit Loop gameplay](screenshots/Skärmbild_2026-07-01_110202.png)
+![Fruit Loop gameplay](screenshots/Skärmbild%202026-07-01%20110202.png)
 
 ### Tester – 23/23 godkända
-![pytest results](screenshots/Skärmbild_2026-07-01_110339.png)
+![pytest results](screenshots/Skärmbild%202026-07-01%20110339.png)
