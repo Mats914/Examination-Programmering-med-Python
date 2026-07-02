@@ -61,15 +61,22 @@ pytest tests/
 
 | Version 2 | Status |
 |-----------|--------|
-| I – Fällor (-10 poäng, ligger kvar)     | ✅ |
-| J – Spade (tar bort en vägg)            | ✅ |
-| K – Nycklar och kistor (+100 poäng)     | ✅ |
-| L – Bördig jord (ny frukt var 25:e drag)| ✅ |
+| I – Fällor (-10 poäng, ligger kvar)      | ✅ |
+| J – Spade (tar bort en vägg)             | ✅ |
+| K – Nycklar och kistor (+100 poäng)      | ✅ |
+| L – Bördig jord (ny frukt var 25:e drag) | ✅ |
 | M – Exit (vinn när alla frukter plockats)| ✅ |
-| N – Jump (JW/JA/JS/JD hoppar två steg) | ✅ |
+| N – Jump (JW/JA/JS/JD hoppar två steg)  | ✅ |
 
 | Version 3 | Status |
 |-----------|--------|
 | O – Grace period (5 steg utan avdrag)   | ✅ |
 | S – TDD med pytest (23 tester)          | ✅ |
-.
+
+## Skärmdumpar
+
+### Spelet i aktion
+![Fruit Loop gameplay](screenshots/Skärmbild_2026-07-01_110202.png)
+
+### Tester – 23/23 godkända
+![pytest results](screenshots/Skärmbild_2026-07-01_110339.png)
